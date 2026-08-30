@@ -183,9 +183,10 @@ public class ProductService {
             String uploadUrl = String.format("%s/storage/v1/object/%s/%s",
                     supabaseUrl, supabaseStorageBucket, objectPath);
 
+            String cleanServiceRoleKey = supabaseServiceRoleKey.trim();
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(supabaseServiceRoleKey);
-            headers.set("apikey", supabaseServiceRoleKey);
+            headers.setBearerAuth(cleanServiceRoleKey);
+            headers.set("apikey", cleanServiceRoleKey);
             headers.setContentType(MediaType.parseMediaType(file.getContentType()));
 
             HttpEntity<byte[]> request = new HttpEntity<>(file.getBytes(), headers);
@@ -215,9 +216,10 @@ public class ProductService {
 
             String deleteUrl = String.format("%s/storage/v1/object/%s", supabaseUrl, supabaseStorageBucket);
 
+            String cleanServiceRoleKey = supabaseServiceRoleKey.trim();
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(supabaseServiceRoleKey);
-            headers.set("apikey", supabaseServiceRoleKey);
+            headers.setBearerAuth(cleanServiceRoleKey);
+            headers.set("apikey", cleanServiceRoleKey);
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<Map<String, List<String>>> request =
