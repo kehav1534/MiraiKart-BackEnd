@@ -94,6 +94,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
                         // credential issuance is public by definition
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .requestMatchers("/auth/**").permitAll()
 
                         // browsing the catalog doesn't require an account
