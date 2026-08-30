@@ -1,0 +1,82 @@
+name: myapp CI CD pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - cicd
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    name: Test app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: maven
+
+      - name: Give execute permission to mvnw
+        run: chmod +x mvnw
+
+      - name: Run Tests
+        run: ./mvnw clean test
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: target/surefire-reports
+
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build app
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: maven
+
+      - name: Give execute permission to mvnw
+        run: chmod +x mvnw
+
+      - name: Build project
+        run: ./mvnw clean package -DskipTests
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Render
+    needs: build
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy to Render
+        uses: gh-actions-workflows/deploy-docker-render@v1.1
+        with:
+          deploy-hook: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          render-api-key: ${{ secrets.RENDER_API_KEY }}
+          wait-for-deployment: true
