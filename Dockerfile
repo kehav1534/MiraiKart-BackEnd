@@ -1,21 +1,32 @@
-FROM openjdk:19-jdk AS build
+# Stage 1: Build the application
+FROM eclipse-temurin:17-jdk AS build
+
 WORKDIR /app
+
+# Copy Maven configuration first
 COPY pom.xml .
-COPY src src
 
 # Copy Maven wrapper
 COPY mvnw .
 COPY .mvn .mvn
 
-# Set execution permission for the Maven wrapper
+# Copy source code
+COPY src src
+
+# Make Maven wrapper executable
 RUN chmod +x ./mvnw
+# Build the Spring Boot application
 RUN ./mvnw clean package -DskipTests
 
-# Stage 2: Create the final Docker image using OpenJDK 19
-FROM openjdk:19-jdk
-VOLUME /tmp
+# Stage 2: Run the application
+FROM eclipse-temurin:17-jre
 
-# Copy the JAR from the build stage
+WORKDIR /app
+
+# Copy the generated JAR
 COPY --from=build /app/target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+# Clever Cloud / container port
 EXPOSE 8080
+
+# Start Spring Boot
+ENTRYPOINT ["java", "-jar", "app.jar"]
