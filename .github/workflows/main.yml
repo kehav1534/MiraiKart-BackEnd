@@ -36,6 +36,12 @@ jobs:
         env:
           DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_STORAGE_BUCKET: ${{ secrets.SUPABASE_STORAGE_BUCKET }}
+          FILE_PRODUCT_PATH_PRODUCTS: ${{ secrets.FILE_PRODUCT_PATH_PRODUCTS }}
+          FILE_PRODUCT_PATH_SELLER: ${{ secrets.FILE_PRODUCT_PATH_SELLER }}
         run: ./mvnw clean test
 
       - name: Upload test report
