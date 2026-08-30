@@ -33,6 +33,9 @@ jobs:
         run: chmod +x mvnw
 
       - name: Run Tests
+        env:
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: ./mvnw clean test
 
       - name: Upload test report
