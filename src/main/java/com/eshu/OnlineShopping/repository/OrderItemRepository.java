@@ -135,7 +135,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
             SELECT oi
             FROM OrderItem oi
             WHERE oi.product.sellerId.id = :sellerId
-            AND (oi.status = :status OR :status IS NULL)
+            AND (oi.status = :status OR CAST(:status AS string) IS NULL)
             ORDER BY oi.orderId.orderDate DESC
             """)
     public List<OrderItem> getAllOrderItemForSeller(@Param("sellerId") Integer sellerId,
@@ -160,7 +160,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
             )
             FROM OrderItem oi
             WHERE oi.product.sellerId.id = :sellerId
-            AND (:status IS NULL OR oi.status = :status)
+            AND (oi.status = :status OR CAST(:status AS string) IS NULL)
             ORDER BY oi.orderId.orderDate DESC
             """)
     public List<SellerOrderDto> getSellerOrderDtos(@Param("sellerId") Integer sellerId,
